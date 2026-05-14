@@ -11,6 +11,7 @@ export interface Project {
   demoUrl?: string;
   status: 'public' | 'private';
   featured: boolean;
+  features: string[];
 }
 
 export const projects: Project[] = [
@@ -28,6 +29,14 @@ Deployed on AWS Ubuntu using Nginx as a reverse proxy and maintained with Git/Gi
     githubFrontend: 'https://github.com/Sishir-Stha/Finance-Manager.git',
     status: 'public',
     featured: true,
+    features: [
+      'Secure account-based finance tracking workflow',
+      'Income and expense records with categorized data',
+      'Financial reports and analytics dashboard',
+      'PostgreSQL-backed persistence for reliable records',
+      'AWS Ubuntu deployment with Nginx reverse proxy',
+      'Type-safe React frontend built with TypeScript',
+    ],
   },
   {
     id: 'flight-info',
@@ -40,9 +49,16 @@ hosted on Windows Server via IIS, while the Java Spring Boot (Java 21) backend r
 Windows service with MSSQL database. Managed SSL certificate activation, updates, and 
 secure HTTPS deployment for the live production environment.`,
     techStack: ['React', 'TypeScript', 'Java Spring Boot', 'Java 21', 'MSSQL', 'IIS', 'Windows Server', 'SSL'],
-    githubBackend: 'https://github.com/Sishir-Stha/Flight-Information-System.git',
     status: 'public',
     featured: true,
+    features: [
+      'Live flight status updates for website and mobile app',
+      'Java Spring Boot backend running as a Windows service',
+      'MSSQL-backed flight schedule and status data handling',
+      'IIS-hosted React dashboard for operational staff',
+      'Secure HTTPS deployment with SSL certificate setup',
+      'Production use across Yeti Airlines digital systems',
+    ],
   },
   {
     id: 'fare-update',
@@ -54,10 +70,19 @@ from anywhere, anytime. Built with Java Spring Boot (Java 21), MSSQL, and React 
 The frontend is hosted on IIS and the API runs through IntelliJ on Windows Server. Managed 
 secure HTTPS deployment and live system updates for real-world production use.`,
     techStack: ['React', 'TypeScript', 'Java Spring Boot', 'Java 21', 'MSSQL', 'IIS', 'HTTPS'],
-    githubBackend: 'https://github.com/Sishir-Stha/Fare-Update-System.git',
+    githubFrontend: 'https://github.com/Sishir-Stha/FareUpdaterReact.git',
+    githubBackend: 'https://github.com/Sishir-Stha/FareUpdaterApi.git',
     demoUrl: 'https://www.linkedin.com/posts/sishir-shrestha-57a50b1b9_airlinetech-fullstackdeveloper-reactjs-activity-7402006757176381441',
     status: 'public',
     featured: true,
+    features: [
+      'Role-based fare management for authorized airline staff',
+      'Create and update ticket pricing from anywhere',
+      'Real-time fare changes for time-sensitive operations',
+      'Java Spring Boot API backed by MSSQL',
+      'React TypeScript frontend hosted on IIS',
+      'Secure HTTPS deployment on Windows Server',
+    ],
   },
   {
     id: 'airlines-api',
@@ -72,6 +97,14 @@ between airline systems.`,
     githubBackend: 'https://github.com/Sishir-Stha/Airline-Booking-System.git',
     status: 'public',
     featured: false,
+    features: [
+      'REST API bridge over multiple airline SOAP providers',
+      'XML to JSON conversion for integration consistency',
+      'Fare comparison and booking workflow support',
+      'Java Spring Boot backend for API orchestration',
+      'React frontend for operational visibility',
+      'Designed for multi-airline interoperability',
+    ],
   },
   {
     id: 'elearning',
@@ -83,8 +116,18 @@ tracking and course discussion features. Used Java Spring Boot (Java 21), React,
 and a TinyLlama model trained in Google Colab for AI-powered features. Deployed on Ubuntu 
 server and documented the development process in README files.`,
     techStack: ['Java Spring Boot', 'Java 21', 'React', 'PostgreSQL', 'TinyLlama', 'Google Colab', 'Ubuntu'],
+    githubFrontend: 'https://github.com/Sishir-Stha/SikaiVerse_Frontend',
+    githubBackend: 'https://github.com/Sishir-Stha/SikaiVerse_Api.git',
     liveUrl: 'http://sikaiverse.com',
     status: 'public',
     featured: true,
+    features: [
+      'Role-based access for students, instructors, and admins',
+      'Course progress tracking and discussion workflow',
+      'AI-assisted features using a TinyLlama model',
+      'PostgreSQL-backed learning data storage',
+      'Ubuntu server deployment with documented setup',
+      'React frontend connected to Java Spring Boot APIs',
+    ],
   },
 ];

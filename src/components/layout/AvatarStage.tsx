@@ -8,13 +8,15 @@ const HERO_IDLE_SEQ = getIdleSequence('hero')!;
 const HERO_IDLE_FRAMES = getFrameUrls(HERO_IDLE_SEQ);
 const PROJECTS_HOLD_FRAME = '/avatar/experience-to-projects/00194.webp';
 
-const PARTICLES = [
-  { left: '20%', top: '15%', delay: '0s', duration: '6s' },
-  { left: '75%', top: '25%', delay: '1s', duration: '8s' },
-  { left: '40%', top: '70%', delay: '2s', duration: '7s' },
-  { left: '85%', top: '60%', delay: '0.5s', duration: '9s' },
-  { left: '15%', top: '80%', delay: '3s', duration: '6s' },
-  { left: '60%', top: '10%', delay: '1.5s', duration: '7.5s' },
+const AVATAR_SPARKLES = [
+  { left: '22%', top: '20%', size: '3px', opacity: 0.36, delay: '0s', duration: '8s' },
+  { left: '80%', top: '24%', size: '2px', opacity: 0.3, delay: '1.3s', duration: '9s' },
+  { left: '14%', top: '45%', size: '2px', opacity: 0.28, delay: '2.1s', duration: '10s' },
+  { left: '88%', top: '47%', size: '3px', opacity: 0.32, delay: '0.7s', duration: '8.5s' },
+  { left: '28%', top: '68%', size: '2px', opacity: 0.22, delay: '2.8s', duration: '11s' },
+  { left: '72%', top: '72%', size: '2px', opacity: 0.24, delay: '1.8s', duration: '10.5s' },
+  { left: '8%', top: '30%', size: '1.5px', opacity: 0.2, delay: '3.2s', duration: '12s' },
+  { left: '92%', top: '34%', size: '1.5px', opacity: 0.2, delay: '4s', duration: '12.5s' },
 ];
 
 type AvatarMode = 'idle' | 'transition' | 'hold';
@@ -134,6 +136,7 @@ export function AvatarStage() {
 
   const isBreathing = mode === 'hold';
   const isProjectsHold = activeSection === 'projects' && mode === 'hold';
+  const showHeroSparkles = activeSection === 'hero' && mode === 'idle';
 
   return (
     <div className={`avatar-stage-fullscreen${isProjectsHold ? ' projects-hold' : ''}`}>
@@ -145,9 +148,25 @@ export function AvatarStage() {
           left: 'calc(var(--avatar-x) - 15%)', top: 'calc(var(--avatar-y) - 20%)',
           pointerEvents: 'none', animation: 'stageGlowPulse 7s ease-in-out infinite', animationDelay: '2.5s',
         }} />
-        {PARTICLES.map((p, i) => (
-          <div key={i} className="stage-particle" style={{ left: p.left, top: p.top, animationDelay: p.delay, animationDuration: p.duration }} />
-        ))}
+        {showHeroSparkles && (
+          <div className="avatar-sparkle-field" aria-hidden="true">
+            {AVATAR_SPARKLES.map((p, i) => (
+              <span
+                key={i}
+                className="avatar-sparkle"
+                style={{
+                  left: p.left,
+                  top: p.top,
+                  width: p.size,
+                  height: p.size,
+                  opacity: p.opacity,
+                  animationDelay: p.delay,
+                  animationDuration: p.duration,
+                }}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       <div className={`avatar-frame-fullscreen ${hasTransparent ? 'transparent' : ''} ${isBreathing ? 'avatar-breathing' : ''}`}>
