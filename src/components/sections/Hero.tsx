@@ -3,11 +3,11 @@ import { SectionWrapper } from '@/components/layout/SectionWrapper';
 
 export function Hero() {
   return (
-    <SectionWrapper id="hero" minHeight="100vh">
+    <SectionWrapper id="hero" className="hero-section" minHeight="min(900px, 100vh)">
       {/* Content LEFT — avatar is RIGHT at x:70% */}
-      <div className="section-content-left hero-content" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: '100vh' }}>
+      <div className="section-content-left hero-content">
         {/* Status badge */}
-        <div className="animate-in" style={{ marginBottom: '32px' }}>
+        <div className="animate-in" style={{ marginBottom: '24px' }}>
           <span style={{
             display: 'inline-flex', alignItems: 'center', gap: '8px',
             padding: '6px 14px', background: 'rgba(245,158,11,0.08)',
@@ -48,7 +48,7 @@ export function Hero() {
         </div>
 
         <div className="animate-in" style={{
-          display: 'flex', gap: 'clamp(18px, 3vw, 32px)', marginTop: '48px', paddingTop: '28px',
+          display: 'flex', gap: 'clamp(18px, 3vw, 32px)', marginTop: '40px', paddingTop: '24px',
           borderTop: '1px solid rgba(255,255,255,0.05)',
           flexWrap: 'wrap',
         }}>

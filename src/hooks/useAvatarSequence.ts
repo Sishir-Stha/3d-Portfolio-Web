@@ -55,22 +55,33 @@ export function useAvatarSequence({
   useEffect(() => {
     if (frameUrls.length === 0) return;
 
-    setIsLoaded(false);
-    setLoadProgress(0);
+    let cancelled = false;
+
+    Promise.resolve().then(() => {
+      if (cancelled) return;
+      setIsLoaded(false);
+      setLoadProgress(0);
+    });
 
     preloadImagesBatched(frameUrls, 30, (loaded, total) => {
+      if (cancelled) return;
       setLoadProgress(loaded / total);
     }).then(() => {
+      if (cancelled) return;
       setIsLoaded(true);
       if (autoPlay) {
         isPlayingRef.current = true;
         setIsPlaying(true);
       }
     });
+
+    return () => {
+      cancelled = true;
+    };
   }, [frameUrls, autoPlay]);
 
   // RAF loop for idle playback
-  const tick = useCallback((timestamp: number) => {
+  const tick = useCallback(function tick(timestamp: number) {
     if (!isPlayingRef.current) return;
 
     if (timestamp - lastTimeRef.current >= frameIntervalRef.current) {
@@ -81,7 +92,6 @@ export function useAvatarSequence({
         if (loop) {
           nextFrame = 0;
         } else {
-          nextFrame = frameCountRef.current - 1;
           isPlayingRef.current = false;
           setIsPlaying(false);
           return;

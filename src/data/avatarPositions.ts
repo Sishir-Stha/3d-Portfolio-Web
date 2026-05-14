@@ -11,12 +11,12 @@ export interface AvatarPosition {
 
 /** Section idle/hold positions */
 export const SECTION_POSITIONS: Record<string, AvatarPosition> = {
-  hero:       { x: 78, y: 50, scale: 1.0 },
+  hero:       { x: 70, y: 53, scale: 1.22 },
   about:      { x: 20, y: 54, scale: 1.0 },
   skills:     { x: 83, y: 58, scale: 0.98 },
   experience: { x: 18, y: 58, scale: 1.0 },
   projects:   { x: 78, y: 40, scale: 0.55 },
-  contact:    { x: 18, y: 50, scale: 1.0 },
+  contact:    { x: 28, y: 55, scale: 0.82 },
 };
 
 /** Transition start/end positions (from → to) */

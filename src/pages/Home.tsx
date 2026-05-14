@@ -15,7 +15,7 @@ export function Home() {
       {/* Fixed full-viewport avatar layer */}
       <AvatarStage />
 
-      {/* Scrollable content — full width, sections positioned opposite avatar */}
+      {/* Scrollable content, full width with sections positioned opposite avatar. */}
       <main style={{ position: 'relative', zIndex: 5 }}>
         <Hero />
         <About />
@@ -24,20 +24,9 @@ export function Home() {
         <Projects />
         <Contact />
 
-        {/* Footer */}
-        <footer style={{
-          padding: '32px 48px',
-          borderTop: '1px solid rgba(255,255,255,0.05)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-text-muted)' }}>
-            © {new Date().getFullYear()} Sishir Shrestha
-          </span>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-text-muted)' }}>
-            Built with React + GSAP
-          </span>
+        <footer className="site-footer">
+          <span>&copy; {new Date().getFullYear()} Sishir Shrestha</span>
+          <span>Built with React + GSAP</span>
         </footer>
       </main>
     </>

@@ -13,14 +13,8 @@ export function Contact() {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
 
   return (
-    <SectionWrapper id="contact" minHeight="100vh" className="contact-section">
+    <SectionWrapper id="contact" minHeight="auto" className="contact-section">
       <div className="contact-shell">
-        <div className="contact-heading animate-in">
-          <span className="contact-heading-kicker">05 / Contact</span>
-          <h2>Get In Touch</h2>
-          <p>Have a system to ship, stabilize, or improve? Send the useful details and I will get back with a clear next step.</p>
-        </div>
-
         <div className="contact-wrapper">
           <div className="contact-left-panel animate-in" aria-label="Avatar contact summary">
             <div className="contact-avatar-copy">
@@ -35,6 +29,12 @@ export function Contact() {
           </div>
 
           <div className="contact-right-panel">
+            <div className="contact-heading animate-in">
+              <span className="contact-heading-kicker">05 / Contact</span>
+              <h2>Get In Touch</h2>
+              <p>Have a system to ship, stabilize, or improve? Send the useful details and I will get back with a clear next step.</p>
+            </div>
+
             <div className="contact-info-grid animate-in">
               {contactItems.map((item) => (
                 <div key={item.label} className="contact-info-card glass-card">

@@ -4,9 +4,9 @@ import { useScrollAvatarTimeline } from '@/hooks/useScrollAvatarTimeline';
 import { getFrameUrls, getIdleSequence } from '@/data/avatarSequences';
 import { SECTION_POSITIONS, applyAvatarPosition } from '@/data/avatarPositions';
 
-// Stable module-level constants
 const HERO_IDLE_SEQ = getIdleSequence('hero')!;
 const HERO_IDLE_FRAMES = getFrameUrls(HERO_IDLE_SEQ);
+const PROJECTS_HOLD_FRAME = '/avatar/experience-to-projects/00194.webp';
 
 const PARTICLES = [
   { left: '20%', top: '15%', delay: '0s', duration: '6s' },
@@ -19,16 +19,36 @@ const PARTICLES = [
 
 type AvatarMode = 'idle' | 'transition' | 'hold';
 
+function getTransitionTarget(sequenceId: string) {
+  return sequenceId.split('-to-')[1] ?? '';
+}
+
 export function AvatarStage() {
   const [mode, setMode] = useState<AvatarMode>('idle');
+  const [activeSection, setActiveSection] = useState('hero');
   const [transitionFrameUrl, setTransitionFrameUrl] = useState('');
+  const [holdFrameUrl, setHoldFrameUrl] = useState('');
   const [hasTransparent, setHasTransparent] = useState(false);
-  const holdFrameRef = useRef('');
+  const modeRef = useRef(mode);
 
-  // Set initial position
   useEffect(() => {
     applyAvatarPosition(SECTION_POSITIONS.hero);
   }, []);
+
+  useEffect(() => {
+    modeRef.current = mode;
+  }, [mode]);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.dataset.avatarSection = activeSection;
+    root.dataset.avatarMode = mode;
+
+    return () => {
+      delete root.dataset.avatarSection;
+      delete root.dataset.avatarMode;
+    };
+  }, [activeSection, mode]);
 
   const {
     currentFrameUrl: idleFrameUrl,
@@ -46,12 +66,12 @@ export function AvatarStage() {
     if (idleLoaded && mode === 'idle') playIdle();
   }, [idleLoaded, mode, playIdle]);
 
-  // Detect transparency once
   useEffect(() => {
     const img = new Image();
     img.onload = () => {
       const c = document.createElement('canvas');
-      c.width = 4; c.height = 4;
+      c.width = 4;
+      c.height = 4;
       const ctx = c.getContext('2d');
       if (!ctx) return;
       ctx.drawImage(img, 0, 0, 4, 4);
@@ -64,25 +84,41 @@ export function AvatarStage() {
     (frameIndex: number, _seqId: string, frameUrls: string[]) => {
       const url = frameUrls[frameIndex] ?? '';
       setTransitionFrameUrl(url);
-      holdFrameRef.current = url;
-    }, []
+      setHoldFrameUrl(url);
+    },
+    []
   );
 
-  const handleTransitionStart = useCallback((_: string) => {
+  const handleTransitionStart = useCallback(() => {
     pauseIdle();
     setMode('transition');
   }, [pauseIdle]);
 
-  const handleTransitionEnd = useCallback((_: string) => {
+  const handleTransitionEnd = useCallback((sequenceId: string) => {
+    const targetSection = getTransitionTarget(sequenceId);
+    if (targetSection) setActiveSection(targetSection);
     setMode('hold');
   }, []);
 
-  const handleSectionEnter = useCallback((sectionId: string) => {
-    if (sectionId === 'hero') {
-      setMode('idle');
-      playIdle();
-    }
-  }, [playIdle]);
+  const handleSectionEnter = useCallback(
+    (sectionId: string) => {
+      setActiveSection(sectionId);
+
+      if (sectionId === 'hero') {
+        setMode('idle');
+        playIdle();
+        return;
+      }
+
+      if (sectionId === 'projects' && modeRef.current === 'idle') {
+        pauseIdle();
+        setHoldFrameUrl(PROJECTS_HOLD_FRAME);
+        setTransitionFrameUrl(PROJECTS_HOLD_FRAME);
+        setMode('hold');
+      }
+    },
+    [pauseIdle, playIdle]
+  );
 
   useScrollAvatarTimeline({
     onTransitionFrame: handleTransitionFrame,
@@ -94,15 +130,14 @@ export function AvatarStage() {
   const displayUrl =
     mode === 'idle' ? idleFrameUrl
     : mode === 'transition' ? transitionFrameUrl
-    : holdFrameRef.current || transitionFrameUrl;
+    : holdFrameUrl || transitionFrameUrl;
 
   const isBreathing = mode === 'hold';
+  const isProjectsHold = activeSection === 'projects' && mode === 'hold';
 
   return (
-    <div className="avatar-stage-fullscreen">
-      {/* Background effects layer */}
+    <div className={`avatar-stage-fullscreen${isProjectsHold ? ' projects-hold' : ''}`}>
       <div className="avatar-stage-bg">
-        {/* Ambient glow orbs */}
         <div className="stage-glow-orb" style={{ left: 'var(--avatar-x)', top: 'var(--avatar-y)', transform: 'translate(-50%, -50%)' }} />
         <div style={{
           position: 'absolute', width: '180px', height: '180px', borderRadius: '50%',
@@ -110,13 +145,11 @@ export function AvatarStage() {
           left: 'calc(var(--avatar-x) - 15%)', top: 'calc(var(--avatar-y) - 20%)',
           pointerEvents: 'none', animation: 'stageGlowPulse 7s ease-in-out infinite', animationDelay: '2.5s',
         }} />
-        {/* Floating particles near avatar */}
         {PARTICLES.map((p, i) => (
           <div key={i} className="stage-particle" style={{ left: p.left, top: p.top, animationDelay: p.delay, animationDuration: p.duration }} />
         ))}
       </div>
 
-      {/* Avatar frame — positioned by CSS vars */}
       <div className={`avatar-frame-fullscreen ${hasTransparent ? 'transparent' : ''} ${isBreathing ? 'avatar-breathing' : ''}`}>
         {displayUrl && (
           <img
@@ -127,12 +160,6 @@ export function AvatarStage() {
             draggable={false}
           />
         )}
-      </div>
-
-      {/* "Your Guide" badge follows avatar */}
-      <div className="avatar-badge" style={{ left: 'var(--avatar-x)', top: 'calc(var(--avatar-y) - 42%)' }}>
-        <span className="avatar-badge-dot" />
-        Your Guide
       </div>
     </div>
   );
