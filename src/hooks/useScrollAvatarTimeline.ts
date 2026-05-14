@@ -15,7 +15,7 @@ gsap.registerPlugin(ScrollTrigger);
 interface ScrollAvatarCallbacks {
   onTransitionFrame: (frameIndex: number, sequenceId: string, frameUrls: string[]) => void;
   onTransitionStart: (sequenceId: string) => void;
-  onTransitionEnd:   (sequenceId: string) => void;
+  onTransitionEnd:   (sequenceId: string, targetSection: string) => void;
   onSectionEnter:    (sectionId: string)  => void;
 }
 
@@ -67,9 +67,15 @@ export function useScrollAvatarTimeline(callbacks: ScrollAvatarCallbacks) {
           }
         },
         onEnter:     () => callbacksRef.current.onTransitionStart(seq.id),
-        onLeave:     () => callbacksRef.current.onTransitionEnd(seq.id),
+        onLeave:     () => {
+          if (posTrans) applyAvatarPosition(posTrans.end);
+          callbacksRef.current.onTransitionEnd(seq.id, seq.toSection ?? seq.fromSection);
+        },
         onEnterBack: () => callbacksRef.current.onTransitionStart(seq.id),
-        onLeaveBack: () => callbacksRef.current.onTransitionEnd(seq.id),
+        onLeaveBack: () => {
+          if (posTrans) applyAvatarPosition(posTrans.start);
+          callbacksRef.current.onTransitionEnd(seq.id, seq.fromSection);
+        },
       });
 
       triggersRef.current.push(trigger);

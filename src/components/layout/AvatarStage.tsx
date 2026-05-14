@@ -21,10 +21,6 @@ const AVATAR_SPARKLES = [
 
 type AvatarMode = 'idle' | 'transition' | 'hold';
 
-function getTransitionTarget(sequenceId: string) {
-  return sequenceId.split('-to-')[1] ?? '';
-}
-
 export function AvatarStage() {
   const [mode, setMode] = useState<AvatarMode>('idle');
   const [activeSection, setActiveSection] = useState('hero');
@@ -96,11 +92,17 @@ export function AvatarStage() {
     setMode('transition');
   }, [pauseIdle]);
 
-  const handleTransitionEnd = useCallback((sequenceId: string) => {
-    const targetSection = getTransitionTarget(sequenceId);
-    if (targetSection) setActiveSection(targetSection);
+  const handleTransitionEnd = useCallback((_: string, targetSection: string) => {
+    setActiveSection(targetSection);
+
+    if (targetSection === 'hero') {
+      setMode('idle');
+      playIdle();
+      return;
+    }
+
     setMode('hold');
-  }, []);
+  }, [playIdle]);
 
   const handleSectionEnter = useCallback(
     (sectionId: string) => {
