@@ -42,7 +42,7 @@ export function Hero() {
         </p>
 
         <div className="animate-in" style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <a href="#projects" className="btn-primary" id="hero-cta-projects">View Projects <span>→</span></a>
+          <a href="/Sishir_Shrestha_CV.pdf" download className="btn-primary" id="hero-cta-cv">Download CV <span>↓</span></a>
           <a href="#contact" className="btn-secondary" id="hero-cta-contact">Contact Me</a>
           <a href={profile.github} target="_blank" rel="noopener noreferrer" className="btn-secondary" id="hero-cta-github">GitHub ↗</a>
         </div>

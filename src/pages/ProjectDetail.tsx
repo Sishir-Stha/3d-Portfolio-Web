@@ -1,61 +1,111 @@
 import { useParams, Link } from 'react-router-dom';
 import { projects } from '@/data/projects';
 
+function getSourceUrl(project: typeof projects[number]) {
+  return project.githubBackend ?? project.githubFrontend;
+}
+
+function normalizeDescription(text: string) {
+  return text.replace(/\s+/g, ' ').trim();
+}
+
 export function ProjectDetail() {
   const { slug } = useParams<{ slug: string }>();
   const project = projects.find((p) => p.slug === slug);
 
   if (!project) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '24px', background: 'var(--color-bg-base)', color: 'var(--color-text-primary)' }}>
-        <h1 style={{ fontFamily: 'var(--font-headline)', fontSize: '48px', fontWeight: 700, color: 'var(--color-primary)' }}>404</h1>
-        <p style={{ fontFamily: 'var(--font-body)', color: 'var(--color-text-muted)' }}>Project not found.</p>
-        <Link to="/" className="btn-primary">← Back Home</Link>
-      </div>
+      <main className="project-detail-page project-detail-empty">
+        <h1>404</h1>
+        <p>Project not found.</p>
+        <Link to="/#projects" className="btn-primary">Back to Projects</Link>
+      </main>
     );
   }
 
+  const sourceUrl = getSourceUrl(project);
+
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--color-bg-base)', color: 'var(--color-text-primary)' }}>
-      {/* Top nav */}
-      <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, padding: '0 48px', height: '60px', display: 'flex', alignItems: 'center', background: 'rgba(14,19,34,0.85)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-        <Link to="/" style={{ fontFamily: 'var(--font-headline)', fontWeight: 700, fontSize: '18px', color: 'var(--color-primary)', textDecoration: 'none' }}>
-          SS<span style={{ color: 'var(--color-secondary)' }}>.</span>
-        </Link>
-        <span style={{ margin: '0 16px', color: 'var(--color-outline-variant)' }}>/</span>
-        <span style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: 'var(--color-text-secondary)' }}>{project.title}</span>
-        <Link to="/" style={{ marginLeft: 'auto', fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-text-muted)', textDecoration: 'none' }}>← Back</Link>
-      </nav>
+    <main className="project-detail-page">
+      <div className="project-detail-shell">
+        <Link to="/#projects" className="project-detail-back">Back to Projects</Link>
 
-      <div style={{ maxWidth: '800px', margin: '0 auto', padding: '100px 32px 64px' }}>
-        {/* Title */}
-        <h1 style={{ fontFamily: 'var(--font-headline)', fontSize: 'clamp(32px, 4vw, 56px)', fontWeight: 800, color: '#fff', marginBottom: '12px', letterSpacing: '-0.03em' }}>{project.title}</h1>
-        <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: 'var(--color-text-secondary)', marginBottom: '32px', lineHeight: 1.6 }}>{project.shortDescription}</p>
-
-        {/* Tech pills */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '40px' }}>
-          {project.techStack.map((t) => <span key={t} className="pill-tag">{t}</span>)}
+        <div className={`project-detail-visual project-visual-${project.id}`} aria-hidden="true">
+          <div className="project-visual-panel">
+            <span className="project-visual-kicker">{project.title}</span>
+            <div className="project-visual-lines">
+              <span />
+              <span />
+              <span />
+            </div>
+            <div className="project-visual-chart">
+              <span style={{ height: '34%' }} />
+              <span style={{ height: '58%' }} />
+              <span style={{ height: '46%' }} />
+              <span style={{ height: '74%' }} />
+              <span style={{ height: '62%' }} />
+            </div>
+          </div>
         </div>
 
-        {/* Links */}
-        <div style={{ display: 'flex', gap: '12px', marginBottom: '48px', flexWrap: 'wrap' }}>
-          {project.liveUrl && <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="btn-primary">Live Site ↗</a>}
-          {project.demoUrl && <a href={project.demoUrl} target="_blank" rel="noopener noreferrer" className="btn-secondary">Demo ↗</a>}
-          {project.githubBackend && <a href={project.githubBackend} target="_blank" rel="noopener noreferrer" className="btn-secondary">GitHub Backend ↗</a>}
-          {project.githubFrontend && <a href={project.githubFrontend} target="_blank" rel="noopener noreferrer" className="btn-secondary">GitHub Frontend ↗</a>}
-        </div>
+        <div className="project-detail-layout">
+          <article className="project-detail-main">
+            <header className="project-detail-heading">
+              <h1>{project.title}</h1>
+              <p>{project.shortDescription}</p>
+            </header>
 
-        {/* Full description */}
-        <div className="glass-card" style={{ padding: '32px' }}>
-          <h2 style={{ fontFamily: 'var(--font-headline)', fontSize: '20px', fontWeight: 600, color: 'var(--color-primary)', marginBottom: '16px' }}>About this project</h2>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'var(--color-text-secondary)', lineHeight: 1.8, whiteSpace: 'pre-line' }}>{project.fullDescription}</p>
-        </div>
+            <section className="project-detail-section">
+              <h2>About This Project</h2>
+              <p>{normalizeDescription(project.fullDescription)}</p>
+            </section>
 
-        {/* Back */}
-        <div style={{ marginTop: '48px', textAlign: 'center' }}>
-          <Link to="/#projects" className="btn-secondary">← All Projects</Link>
+            <section className="project-detail-section">
+              <h2>Key Features</h2>
+              <ul className="project-feature-list">
+                {project.features.map((feature) => (
+                  <li key={feature}>{feature}</li>
+                ))}
+              </ul>
+            </section>
+          </article>
+
+          <aside className="project-info-panel" aria-label="Project info">
+            <h2>Project Info</h2>
+            <div className="project-info-block">
+              <h3>Technologies Used</h3>
+              <div className="project-info-tags">
+                {project.techStack.map((tech) => (
+                  <span key={tech}>{tech}</span>
+                ))}
+              </div>
+            </div>
+
+            <div className="project-info-actions">
+              {sourceUrl && (
+                <a href={sourceUrl} target="_blank" rel="noopener noreferrer" className="project-info-action primary">
+                  View Source Code
+                </a>
+              )}
+              {project.githubBackend && project.githubFrontend && (
+                <a href={project.githubFrontend} target="_blank" rel="noopener noreferrer" className="project-info-action secondary">
+                  Frontend Code
+                </a>
+              )}
+              {project.liveUrl && (
+                <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="project-info-action secondary">
+                  Live Demo
+                </a>
+              )}
+              {project.demoUrl && (
+                <a href={project.demoUrl} target="_blank" rel="noopener noreferrer" className="project-info-action secondary">
+                  Demo
+                </a>
+              )}
+            </div>
+          </aside>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
